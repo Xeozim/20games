@@ -73,3 +73,6 @@ crashlytics-build.properties
 .vscode/
 
 /[Aa]ssets/Sources
+
+# MacOS
+.DS_Store
