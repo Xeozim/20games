@@ -21,9 +21,9 @@ MonoBehaviour:
   blockScoreTopRows: 7
   playerLives: 3
   maximumBallAngle: 60
-  paddleWidth: 3
+  paddleWidth: 1
   paddleHeight: 0.1
   paddleSpeed: 15
-  xMinimum: -8.25
-  xMaxmium: 8.25
+  xMinimum: -7
+  xMaxmium: 7
   resetWait: 0.5

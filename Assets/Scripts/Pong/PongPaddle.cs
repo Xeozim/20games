@@ -12,6 +12,10 @@ public class PongPaddle : MonoBehaviour
     protected PongBall ball;
     protected Vector3 targetPosition;
 
+    // Y-axis limits for the paddle movement, calculated from the settings
+    // for paddle height and the game area's vertical limits.
+    protected Vector2 yLimits;
+
     void Start()
     {
         ball = GameObject.FindGameObjectWithTag("Ball").GetComponent<PongBall>();
@@ -21,6 +25,7 @@ public class PongPaddle : MonoBehaviour
     protected void SettingsRefresh(){
         // NB pong paddles are rotated 90 degrees so they can use the maths from BallBehaviours
         paddle.transform.localScale = new Vector3(settings.paddleHeight,settings.paddleWidth,1);
+        yLimits = new Vector2(settings.yMinimum + settings.paddleHeight * 0.5f, settings.yMaxmium - settings.paddleHeight * 0.5f);
     }
 
     public void OnGameOverStateUpdated(bool isGameOver)
@@ -50,7 +55,7 @@ public class PongPaddle : MonoBehaviour
         var velocity = Mathf.Clamp((targetPosition.y - paddle.transform.position.y) * 10, -settings.paddleSpeed, settings.paddleSpeed);
 
         // Update position, clamping to game limits
-        var newYPosition = Mathf.Clamp(paddle.transform.position.y + velocity * Time.fixedDeltaTime, settings.yMinimum, settings.yMaxmium);
+        var newYPosition = Mathf.Clamp(paddle.transform.position.y + velocity * Time.fixedDeltaTime, yLimits.x, yLimits.y);
         paddle.transform.position = new Vector3(paddle.transform.position.x,newYPosition,paddle.transform.position.z);
     }
 }

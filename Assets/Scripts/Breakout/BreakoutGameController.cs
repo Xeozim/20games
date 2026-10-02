@@ -34,7 +34,7 @@ public class BreakoutGameController : MonoBehaviour
     private int _blocksHit = 0;
     private int _playerLives = 3;
     private int _playerScore = 0;
-    
+
     private void Awake()
     {
         _controls = new BreakoutControls();
@@ -51,7 +51,8 @@ public class BreakoutGameController : MonoBehaviour
     }
 
     // Called by the UI to restart the game
-    public void RestartGame(InputAction.CallbackContext context){
+    public void RestartGame(InputAction.CallbackContext context)
+    {
         ResetBlocks();
 
         _blocksHit = 0;
@@ -91,22 +92,24 @@ public class BreakoutGameController : MonoBehaviour
     // Called by a block when destroyed by the ball
     public void OnScoringBlockDestroyed(float blockValue, GameObject _)
     {
-        SetPlayerScore(_playerScore + (int) blockValue);
+        SetPlayerScore(_playerScore + (int)blockValue);
 
         _blocksHit++;
 
         if (blockValue >= _settings.blockScoreTopRows)
         {
             SetGameStage(GameStage.StageFour);
-        } else if (_gameStage == GameStage.StageOne && _blocksHit >= 4)
+        }
+        else if (_gameStage == GameStage.StageOne && _blocksHit >= 4)
         {
             SetGameStage(GameStage.StageTwo);
-        } else if (_gameStage == GameStage.StageTwo && _blocksHit >= 12)
+        }
+        else if (_gameStage == GameStage.StageTwo && _blocksHit >= 12)
         {
             SetGameStage(GameStage.StageThree);
         }
     }
-    
+
     // Called by the ball when entering the trigger below the player
     public void BallOutOfBounds()
     {
@@ -136,7 +139,7 @@ public class BreakoutGameController : MonoBehaviour
                 // Calculate the new block's position
                 var cubePos = _blockBounds.min + new Vector3(x * _blockPrefab.transform.localScale.x, y * _blockPrefab.transform.localScale.y, 0) + (_blockPrefab.transform.localScale / 2); // Offset by half the cube size to center
                 cubePos.z = 0;
-                
+
                 // Instantiate the block
                 var block = Instantiate(_blockPrefab, cubePos, Quaternion.identity);
                 block.transform.parent = _blockParent;
@@ -162,5 +165,12 @@ public class BreakoutGameController : MonoBehaviour
                 }
             }
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        // Draw the block bounds in the editor for visualization purposes.
+        Gizmos.color = new Color(0f, 0.9f, 1f, 0.5f);
+        Gizmos.DrawWireCube(_blockBounds.center, _blockBounds.size);
     }
 }
