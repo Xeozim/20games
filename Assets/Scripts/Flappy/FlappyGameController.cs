@@ -8,8 +8,8 @@ public class FlappyGameController : MonoBehaviour
     // Score
     public int Score { get; private set; }
 
-    // Player transform
-    [SerializeField] private Transform _playerTransform;
+    // Player
+    [SerializeField] private FlappyPlayer _player;
 
     // List of references to the pipe gameobjects in the scene, these are
     // created by this controller at the start of the game and reused throughout
@@ -46,6 +46,11 @@ public class FlappyGameController : MonoBehaviour
 
         // Subscribe to the input actions
         _controls.Menu.Restart.performed += RestartGame;
+
+        // Subscribe to the player's collision event
+        _player.playerCollidedWithPipe.AddListener(OnPlayerCollidedWithPipe);
+
+        ResetPlayer();
     }
 
     // Update is called once per frame
@@ -64,13 +69,13 @@ public class FlappyGameController : MonoBehaviour
         // and the pipe spacing setting.
         // This logic replaces the need for creating all the pipes at the start
         // of the game, instead they are created as needed and reused when they go offscreen.
-        var playerToLastPipeDistance = _lastPipe != null ? _lastPipe.transform.position.x - _playerTransform.position.x : float.MinValue;
+        var playerToLastPipeDistance = _lastPipe != null ? _lastPipe.transform.position.x - _player.transform.position.x : float.MinValue;
         var screenRightEdge = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, 0)).x;
         var screenLeftEdge = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0)).x;
-        var playerToScreenEdgeDistance = screenRightEdge - _playerTransform.position.x;
+        var playerToScreenEdgeDistance = screenRightEdge - _player.transform.position.x;
 
-        Debug.Log($"Last pipe position: {(_lastPipe != null ? _lastPipe.transform.position.x : float.NaN)}");
-        Debug.Log($"Player to last pipe distance: {playerToLastPipeDistance}, Player to screen edge distance: {playerToScreenEdgeDistance}");
+        // Debug.Log($"Last pipe position: {(_lastPipe != null ? _lastPipe.transform.position.x : float.NaN)}");
+        // Debug.Log($"Player to last pipe distance: {playerToLastPipeDistance}, Player to screen edge distance: {playerToScreenEdgeDistance}");
 
         if (playerToLastPipeDistance < playerToScreenEdgeDistance)
         {
@@ -97,16 +102,17 @@ public class FlappyGameController : MonoBehaviour
                 _pipeQueue.Enqueue(_pipeQueue.Dequeue());
                 _lastPipe = firstPipe;
 
-                Debug.Log($"Reusing pipe {firstPipe.gameObject.name} and moving it to X: {newPipeXPosition}, Y: {newPipeYPosition} with gap size: {gapSize}");
+                // Debug.Log($"Reusing pipe {firstPipe.gameObject.name} and moving it to X: {newPipeXPosition}, Y: {newPipeYPosition} with gap size: {gapSize}");
             }
             else
             {
                 // Create a new pipe and add it to the queue.
                 var pipe = Instantiate(_pipePrefab, new Vector3(newPipeXPosition, newPipeYPosition, 0f), Quaternion.identity);
+                gameOverStateUpdated.AddListener(pipe.SetGameOverState);
                 _pipeQueue.Enqueue(pipe);
                 _lastPipe = pipe;
 
-                Debug.Log($"Creating new pipe {pipe.gameObject.name} at X: {newPipeXPosition}, Y: {newPipeYPosition} with gap size: {gapSize}");
+                // Debug.Log($"Creating new pipe {pipe.gameObject.name} at X: {newPipeXPosition}, Y: {newPipeYPosition} with gap size: {gapSize}");
             }
 
             _lastPipe.SetPipePositions(gapSize);
@@ -127,9 +133,24 @@ public class FlappyGameController : MonoBehaviour
         // Remove all pipes from the scene and clear the queue
         foreach (var pipe in _pipeQueue)
         {
+            gameOverStateUpdated.RemoveListener(pipe.SetGameOverState);
             Destroy(pipe.gameObject);
         }
         _pipeQueue.Clear();
+
+        // Reset the player
+        ResetPlayer();
+    }
+
+    private void ResetPlayer()
+    {
+        // Reset the player position and velocity and enable physics
+        var playerRigidbody = _player.GetComponent<Rigidbody>();
+        playerRigidbody.isKinematic = false;
+        _player.transform.position = new Vector3(-4f, 0f, 0f);
+        playerRigidbody.linearVelocity = Vector3.zero;
+        playerRigidbody.angularVelocity = Vector3.zero;
+        playerRigidbody.rotation = Quaternion.identity;
     }
 
     // Called by the player when passing through a pipe to increment the score
@@ -154,29 +175,13 @@ public class FlappyGameController : MonoBehaviour
         return nextPipeYPosition;
     }
 
-    // Create the pipes at the start of the game and add them to the queue for reuse
-    private void CreatePipes()
+    // Called by the player when colliding with a pipe to end the game
+    public void OnPlayerCollidedWithPipe()
     {
-        // var spawnToDespawnDistance = _despawnPoint.position.x - _spawnPoint.position.x;
-        // var numberOfPipes = Mathf.CeilToInt(spawnToDespawnDistance / _settings.pipeSpacing);
+        _gameOver = true;
+        gameOverStateUpdated.Invoke(_gameOver);
 
-        // for (int i = 0; i < numberOfPipes; i++)
-        // {
-        //     // Calculate the initial X position of the pipe based on the spawn point and the spacing
-        //     var pipeXPosition = _spawnPoint.position.x + (i * _settings.pipeSpacing);
-        //     // Calculate the Y position of the pipe based on the last pipe's Y position and the maximum change in Y position allowed
-        //     var pipeYPosition = CalculateNextPipeYPosition();
-        //     // Instantiate the pipe prefab and set its position
-        //     var pipe = Instantiate(_pipePrefab, new Vector3(pipeXPosition, pipeYPosition, 0f), Quaternion.identity);
-        //     pipe.PipeWentOffscreen.AddListener(OnPipeWentOffscreen);
-        //     _pipeQueue.Enqueue(pipe);
-        // }
-    }
-
-    // Called when a pipe goes offscreen to respawn it at the right side of the screen
-    // To ensure that the pipe spacing is consistent
-    private void OnPipeWentOffscreen(FlappyPipe pipe)
-    {
-        
+        // Disable the player's rigidbody so that it stops moving and falling
+        _player.GetComponent<Rigidbody>().isKinematic = true;
     }
 }

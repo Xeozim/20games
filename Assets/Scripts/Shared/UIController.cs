@@ -6,6 +6,7 @@ public class UIController : MonoBehaviour
     [SerializeField] TextMeshProUGUI playerScore;
     [SerializeField] TextMeshProUGUI playerLives;
     [SerializeField] TextMeshProUGUI opponentScore;
+    [SerializeField] TextMeshProUGUI gameOverText;
 
     public void OnPlayerScoreUpdated(int score){
         if (playerScore != null)
@@ -23,6 +24,12 @@ public class UIController : MonoBehaviour
         if (opponentScore != null)
         {
             opponentScore.text = $"{score}";
+        }
+    }
+    public void OnGameOverUpdated(bool isGameOver){
+        if (gameOverText != null)
+        {
+            gameOverText.text = isGameOver ? "GAME OVER" : "";
         }
     }
 }

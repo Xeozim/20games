@@ -11,5 +11,5 @@ public class FlappySettings : ScriptableObject
     public float pipeYMaximum;
     public float pipeYChangeMaximum; // Maximum change in Y position between consecutive pipes
     public float jumpImpulse;
-    public float resetWait;
+    public float jumpWait;
 }

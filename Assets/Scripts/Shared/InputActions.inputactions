@@ -418,6 +418,35 @@
             ]
         },
         {
+            "name": "Flappy",
+            "id": "3a9aacb3-99ed-43e3-95a8-03be243eae21",
+            "actions": [
+                {
+                    "name": "Flap",
+                    "type": "Button",
+                    "id": "3d5b2cf7-4e25-4105-830f-31b1ddb300dd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7154a123-1f97-460c-b976-bb06b15953bc",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Flap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "Menu",
             "id": "01e0ccf8-f086-4919-98ca-eb3533850353",
             "actions": [

@@ -504,6 +504,35 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             ]
         },
         {
+            ""name"": ""Flappy"",
+            ""id"": ""3a9aacb3-99ed-43e3-95a8-03be243eae21"",
+            ""actions"": [
+                {
+                    ""name"": ""Flap"",
+                    ""type"": ""Button"",
+                    ""id"": ""3d5b2cf7-4e25-4105-830f-31b1ddb300dd"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""7154a123-1f97-460c-b976-bb06b15953bc"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Flap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""Menu"",
             ""id"": ""01e0ccf8-f086-4919-98ca-eb3533850353"",
             ""actions"": [
@@ -568,6 +597,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         // Pong
         m_Pong = asset.FindActionMap("Pong", throwIfNotFound: true);
         m_Pong_Move = m_Pong.FindAction("Move", throwIfNotFound: true);
+        // Flappy
+        m_Flappy = asset.FindActionMap("Flappy", throwIfNotFound: true);
+        m_Flappy_Flap = m_Flappy.FindAction("Flap", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Restart = m_Menu.FindAction("Restart", throwIfNotFound: true);
@@ -578,6 +610,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Breakout.enabled, "This will cause a leak and performance issues, InputActions.Breakout.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_PaddleTest.enabled, "This will cause a leak and performance issues, InputActions.PaddleTest.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Pong.enabled, "This will cause a leak and performance issues, InputActions.Pong.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Flappy.enabled, "This will cause a leak and performance issues, InputActions.Flappy.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Menu.enabled, "This will cause a leak and performance issues, InputActions.Menu.Disable() has not been called.");
     }
 
@@ -961,6 +994,102 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     /// </summary>
     public PongActions @Pong => new PongActions(this);
 
+    // Flappy
+    private readonly InputActionMap m_Flappy;
+    private List<IFlappyActions> m_FlappyActionsCallbackInterfaces = new List<IFlappyActions>();
+    private readonly InputAction m_Flappy_Flap;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Flappy".
+    /// </summary>
+    public struct FlappyActions
+    {
+        private @InputActions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public FlappyActions(@InputActions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Flappy/Flap".
+        /// </summary>
+        public InputAction @Flap => m_Wrapper.m_Flappy_Flap;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Flappy; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="FlappyActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(FlappyActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="FlappyActions" />
+        public void AddCallbacks(IFlappyActions instance)
+        {
+            if (instance == null || m_Wrapper.m_FlappyActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_FlappyActionsCallbackInterfaces.Add(instance);
+            @Flap.started += instance.OnFlap;
+            @Flap.performed += instance.OnFlap;
+            @Flap.canceled += instance.OnFlap;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="FlappyActions" />
+        private void UnregisterCallbacks(IFlappyActions instance)
+        {
+            @Flap.started -= instance.OnFlap;
+            @Flap.performed -= instance.OnFlap;
+            @Flap.canceled -= instance.OnFlap;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="FlappyActions.UnregisterCallbacks(IFlappyActions)" />.
+        /// </summary>
+        /// <seealso cref="FlappyActions.UnregisterCallbacks(IFlappyActions)" />
+        public void RemoveCallbacks(IFlappyActions instance)
+        {
+            if (m_Wrapper.m_FlappyActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="FlappyActions.AddCallbacks(IFlappyActions)" />
+        /// <seealso cref="FlappyActions.RemoveCallbacks(IFlappyActions)" />
+        /// <seealso cref="FlappyActions.UnregisterCallbacks(IFlappyActions)" />
+        public void SetCallbacks(IFlappyActions instance)
+        {
+            foreach (var item in m_Wrapper.m_FlappyActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_FlappyActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="FlappyActions" /> instance referencing this action map.
+    /// </summary>
+    public FlappyActions @Flappy => new FlappyActions(this);
+
     // Menu
     private readonly InputActionMap m_Menu;
     private List<IMenuActions> m_MenuActionsCallbackInterfaces = new List<IMenuActions>();
@@ -1114,6 +1243,21 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMove(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Flappy" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="FlappyActions.AddCallbacks(IFlappyActions)" />
+    /// <seealso cref="FlappyActions.RemoveCallbacks(IFlappyActions)" />
+    public interface IFlappyActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Flap" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFlap(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Menu" which allows adding and removing callbacks.
