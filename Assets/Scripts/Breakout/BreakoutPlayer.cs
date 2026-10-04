@@ -10,29 +10,28 @@ public class BreakoutPlayer : MonoBehaviour
     [SerializeField] private BreakoutSettings _settings;
 
     private Vector3 _targetPosition;
-    private BreakoutControls _controls;
-    private float _moveInput;
+    private InputActions _inputs;
     private float _paddleWidth;
 
     private void Awake(){
-        _controls = new BreakoutControls();
+        _inputs = new InputActions();
         _paddleWidth = _settings.paddleWidth;
     }
 
     private void OnEnable()
     {
         // Enable input actions
-        _controls.Player.Enable();
+        _inputs.Breakout.Enable();
 
         // Subscribe to the input actions
-        _controls.Player.Move.performed += OnMoveInputPerformed;
-        _controls.Player.Move.canceled += OnMoveInputCancelled;
+        _inputs.Breakout.Move.performed += OnMoveInputPerformed;
+        _inputs.Breakout.Move.canceled += OnMoveInputCancelled;
     }
 
     private void OnDisable()
     {
         // Disable input actions
-        _controls.Player.Disable();
+        _inputs.Breakout.Disable();
     }
 
     public void OnGameStageUpdated(GameStage stage)
@@ -49,19 +48,18 @@ public class BreakoutPlayer : MonoBehaviour
     // the current position of the gamepad joystick.
     private void OnMoveInputPerformed(InputAction.CallbackContext context)
     {
-        _moveInput = context.ReadValue<float>();
-
-        // Target y in range 0 (target = yMinimum) to 1 (target = yMaximum)
-        // Adjust mouse / touchscreen inputs to be relative to the screen
-        var xTarget01 = context.control.device switch
-        {
-            Mouse or Touchscreen => _moveInput / Screen.height,
-            _ => (_moveInput + 1.0f) * 0.5f,
-        };
+        var xTarget = InputUtils.GetTargetPositionFromInputValue(
+            context.ReadValue<float>(),
+            context.control.device,
+            _paddle.transform.position.x,
+            _settings.xMinimum,
+            _settings.xMaxmium,
+            _settings.paddleSpeed
+        );
 
         // Set target position
         _targetPosition = new Vector3(
-            _settings.xMinimum + (xTarget01 * (_settings.xMaxmium - _settings.xMinimum)),
+            xTarget,
             _paddle.transform.position.y,
             _paddle.transform.position.z
         );

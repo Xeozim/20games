@@ -12,7 +12,7 @@ public class PongSettings : ScriptableObject
     public float paddleHeight;
     public float paddleSpeed;
     public float yMinimum;
-    public float yMaxmium;
+    public float yMaximum;
     public float resetWait;
     public int winningScore;
 }

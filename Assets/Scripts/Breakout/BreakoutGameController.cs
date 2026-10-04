@@ -21,7 +21,7 @@ public class BreakoutGameController : MonoBehaviour
     public UnityEvent<GameStage> GameStageUpdated;
 
     // Controls for restarting etc.
-    private BreakoutControls _controls;
+    private InputActions _controls;
     [SerializeField] private BreakoutSettings _settings;
 
     // Block settings
@@ -37,13 +37,13 @@ public class BreakoutGameController : MonoBehaviour
 
     private void Awake()
     {
-        _controls = new BreakoutControls();
+        _controls = new InputActions();
     }
 
     private void OnEnable()
     {
         // Enable input actions
-        _controls.Menu.Enable();
+        _controls.Breakout.Enable();
 
         // Subscribe to the input actions
         _controls.Menu.Restart.performed += RestartGame;

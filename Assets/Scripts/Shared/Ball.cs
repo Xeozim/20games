@@ -1,23 +1,25 @@
 using System.Collections;
 using UnityEngine;
+[RequireComponent(typeof(MeshRenderer))]
 
+[RequireComponent(typeof(AudioSource))]
 public abstract class Ball : MonoBehaviour
 {
-    [SerializeField] private LayerMask collisionLayers;
+    [SerializeField] private LayerMask _collisionLayers;
 
-    private AudioSource audioSource;
-    [SerializeField] private AudioClip bounceClip;
+    private AudioSource _audioSource;
+    [SerializeField] private AudioClip _bounceClip;
 
     public Vector3 Velocity {get; protected set;}
 
-    new private MeshRenderer renderer;
-    private bool waitingToReset = false;
-    private bool hitNoisePlayed = false;
+    private MeshRenderer _renderer;
+    private bool _waitingToReset = false;
+    private bool _hitNoisePlayed = false;
 
     void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
-        renderer = GetComponent<MeshRenderer>();
+        _audioSource = GetComponent<AudioSource>();
+        _renderer = GetComponent<MeshRenderer>();
         BallAwake();
     }
 
@@ -34,7 +36,7 @@ public abstract class Ball : MonoBehaviour
 
     void Update(){
         BallPreUpdate();
-        hitNoisePlayed = false;
+        _hitNoisePlayed = false;
         BallPostUpdate();
     }
 
@@ -49,7 +51,7 @@ public abstract class Ball : MonoBehaviour
     void FixedUpdate(){
         PreFixedUpdate();
 
-        if (waitingToReset) { return; }
+        if (_waitingToReset) { return; }
 
         // Handle collisions with a raycast check
         float collisionCheckDistance = Velocity.magnitude * Time.fixedDeltaTime * 1.5f;
@@ -58,7 +60,7 @@ public abstract class Ball : MonoBehaviour
         while (distanceChecked < collisionCheckDistance){
             var rayDistance = collisionCheckDistance - distanceChecked;
             var rayDirection = Velocity.normalized;
-            if (Physics.Raycast(transform.position, rayDirection, out var hit, rayDistance, collisionLayers, QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(transform.position, rayDirection, out var hit, rayDistance, _collisionLayers, QueryTriggerInteraction.Collide))
             {
                 if (hit.collider.isTrigger){
                     TriggerHit(hit);
@@ -80,12 +82,12 @@ public abstract class Ball : MonoBehaviour
     protected virtual void TriggerHit(RaycastHit hit){}
 
     public void OnTimeScaleUpdated(float timeScale) {
-        audioSource.enabled = timeScale < 2.0f;
+        _audioSource.enabled = timeScale < 2.0f;
     }
 
     protected void SetVisualEnabledState(bool state)
     {
-        renderer.enabled = state;
+        _renderer.enabled = state;
     }
 
     private bool _cancelReset = false;
@@ -106,22 +108,22 @@ public abstract class Ball : MonoBehaviour
         
         // Disable the GameObject visuals and set the wait flag
         SetVisualEnabledState(false);
-        waitingToReset = true;
+        _waitingToReset = true;
 
         // Wait for the specified duration
         yield return new WaitForSeconds(seconds);
 
         // Re-enable
         SetVisualEnabledState(true);
-        waitingToReset = false;
+        _waitingToReset = false;
     }
 
     // Play a noise if the game isn't over and we haven't already done so since the last update
     protected void PlayBounceNoise(){
-        if (audioSource != null && audioSource.enabled && !hitNoisePlayed)
+        if (_audioSource != null && _audioSource.enabled && !_hitNoisePlayed)
         {
-            audioSource.PlayOneShot(bounceClip);
-            hitNoisePlayed = true;
+            _audioSource.PlayOneShot(_bounceClip);
+            _hitNoisePlayed = true;
         }
     }
 }

@@ -3,67 +3,67 @@ using UnityEngine.InputSystem;
 
 public class PaddleTestController : MonoBehaviour
 {
-    [SerializeField] protected Transform paddle;
-    [SerializeField] private float translationSensitivity;
-    [SerializeField] private float rotationSensitivity;
+    [SerializeField] protected Transform _paddle;
+    [SerializeField] private float _translationSensitivity;
+    [SerializeField] private float _rotationSensitivity;
 
-    private PaddleTestControls controls;
-    private float leftRightInput;
-    private float upDownInput;
-    private float rotateInput;
+    private InputActions _inputs;
+    private float _leftRightInput;
+    private float _upDownInput;
+    private float _rotateInput;
 
     private void Awake(){
-        controls = new PaddleTestControls();
+        _inputs = new InputActions();
     }
 
     private void OnEnable()
     {
         // Enable input actions
-        controls.Player.Enable();
+        _inputs.PaddleTest.Enable();
 
         // Subscribe to the input actions
-        controls.Player.LeftRight.performed += OnLeftRightInputPerformed;
-        controls.Player.LeftRight.canceled += OnLeftRightInputCancelled;
-        controls.Player.UpDown.performed += OnUpDownInputPerformed;
-        controls.Player.UpDown.canceled += OnUpDownInputCancelled;
-        controls.Player.Rotate.performed += OnRotateInputPerformed;
-        controls.Player.Rotate.canceled += OnRotateInputCancelled;
+        _inputs.PaddleTest.LeftRight.performed += OnLeftRightInputPerformed;
+        _inputs.PaddleTest.LeftRight.canceled += OnLeftRightInputCancelled;
+        _inputs.PaddleTest.UpDown.performed += OnUpDownInputPerformed;
+        _inputs.PaddleTest.UpDown.canceled += OnUpDownInputCancelled;
+        _inputs.PaddleTest.Rotate.performed += OnRotateInputPerformed;
+        _inputs.PaddleTest.Rotate.canceled += OnRotateInputCancelled;
     }
 
     private void OnDisable()
     {
         // Disable input actions
-        controls.Player.Disable();
+        _inputs.PaddleTest.Disable();
     }
 
     private void OnLeftRightInputPerformed(InputAction.CallbackContext context)
     {
-        leftRightInput = context.ReadValue<float>();
+        _leftRightInput = context.ReadValue<float>();
     }
     private void OnLeftRightInputCancelled(InputAction.CallbackContext context)
     {
-        leftRightInput = 0;
+        _leftRightInput = 0;
     }
     private void OnUpDownInputPerformed(InputAction.CallbackContext context)
     {
-        upDownInput = context.ReadValue<float>();
+        _upDownInput = context.ReadValue<float>();
     }
     private void OnUpDownInputCancelled(InputAction.CallbackContext context)
     {
-        upDownInput = 0;
+        _upDownInput = 0;
     }
     private void OnRotateInputPerformed(InputAction.CallbackContext context)
     {
-        rotateInput = context.ReadValue<float>();
+        _rotateInput = context.ReadValue<float>();
     }
     private void OnRotateInputCancelled(InputAction.CallbackContext context)
     {
-        rotateInput = 0;
+        _rotateInput = 0;
     }
 
     void FixedUpdate()
     {
-        paddle.transform.Translate(x: leftRightInput * translationSensitivity, y: upDownInput * translationSensitivity, z:0, relativeTo: Space.World);
-        paddle.transform.Rotate(Vector3.forward, rotateInput * rotationSensitivity);
+        _paddle.transform.Translate(x: _leftRightInput * _translationSensitivity, y: _upDownInput * _translationSensitivity, z:0, relativeTo: Space.World);
+        _paddle.transform.Rotate(Vector3.forward, _rotateInput * _rotationSensitivity);
     }
 }

@@ -21,6 +21,6 @@ MonoBehaviour:
   paddleHeight: 1
   paddleSpeed: 7.5
   yMinimum: -4.5
-  yMaxmium: 4.5
+  yMaximum: 4.5
   resetWait: 0.5
   winningScore: 3

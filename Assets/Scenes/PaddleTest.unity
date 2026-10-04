@@ -559,9 +559,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8acfa15518efb4ba7fb981a8e6cfcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paddle: {fileID: 1297649056}
-  translationSensitivity: 0.5
-  rotationSensitivity: 2
+  _paddle: {fileID: 1297649056}
+  _translationSensitivity: 0.5
+  _rotationSensitivity: 2
 --- !u!1001 &1237639992
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -575,12 +575,20 @@ PrefabInstance:
       value: Cam_2DOrtho16by9
       objectReference: {fileID: 0}
     - target: {fileID: 6530997786497867419, guid: 4d1472adf812d4747a5d96a78e5fce5b, type: 3}
+      propertyPath: m_NormalizedViewPortRect.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6530997786497867419, guid: 4d1472adf812d4747a5d96a78e5fce5b, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.14739373
+      value: 0.17925125
+      objectReference: {fileID: 0}
+    - target: {fileID: 6530997786497867419, guid: 4d1472adf812d4747a5d96a78e5fce5b, type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6530997786497867419, guid: 4d1472adf812d4747a5d96a78e5fce5b, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.70521253
+      value: 0.6414975
       objectReference: {fileID: 0}
     - target: {fileID: 8131698540108764547, guid: 4d1472adf812d4747a5d96a78e5fce5b, type: 3}
       propertyPath: m_LocalRotation.w
