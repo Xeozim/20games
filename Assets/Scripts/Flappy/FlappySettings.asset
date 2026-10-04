@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8efaefa1602c5244860751b4fc51d4d, type: 3}
+  m_Name: FlappySettings
+  m_EditorClassIdentifier: Assembly-CSharp::FlappySettings
+  pipeSpeed: 3
+  pipeSpacing: 3
+  pipeGapMinimum: 1.5
+  pipeGapMaximum: 2
+  pipeYMinimum: -3
+  pipeYMaximum: 3
+  pipeYChangeMaximum: 3
+  jumpImpulse: 0
+  resetWait: 0
