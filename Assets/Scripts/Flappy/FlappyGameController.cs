@@ -11,6 +11,9 @@ public class FlappyGameController : MonoBehaviour
     // Player
     [SerializeField] private FlappyPlayer _player;
 
+    // Parent object for the pipes, used to keep the hierarchy clean
+    [SerializeField] private Transform _pipeParent;
+
     // List of references to the pipe gameobjects in the scene, these are
     // created by this controller at the start of the game and reused throughout
     // the game. We store the references in a queue so that we can easily get
@@ -108,6 +111,7 @@ public class FlappyGameController : MonoBehaviour
             {
                 // Create a new pipe and add it to the queue.
                 var pipe = Instantiate(_pipePrefab, new Vector3(newPipeXPosition, newPipeYPosition, 0f), Quaternion.identity);
+                pipe.transform.SetParent(_pipeParent, true);
                 gameOverStateUpdated.AddListener(pipe.SetGameOverState);
                 _pipeQueue.Enqueue(pipe);
                 _lastPipe = pipe;

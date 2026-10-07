@@ -1,0 +1,1 @@
+// Shared code for objects that can be reset to their initial state.

@@ -54,13 +54,36 @@ public class FlappyPlayer : MonoBehaviour
         }
     }
 
+    // Because the player has multiple colliders they can trigger multiple
+    // OnTriggerEnter events when passing through a pipe, we need to keep track
+    // of how many times any player collider enters the pipe scoring trigger,
+    // and when the corresponding exits occur. When the last player collider
+    // exits the trigger, we can then invoke the event to increment the score.
+    private int _GoalTriggerCount = 0;
+
     private void OnTriggerEnter(Collider other)
     {
         // If the player passes through a pipe, increment the score
         if (other.gameObject.CompareTag("PlayerGoal"))
         {
-            // Debug.Log("Player passed through a pipe!");
-            playerPassedThroughPipe.Invoke();
+            // Debug.Log("Player entered the trigger of a pipe!");
+            _GoalTriggerCount++;
+            // Debug.Log($"Goal Trigger Count: {_GoalTriggerCount}");
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        // If the player exits the trigger of a pipe, increment the score
+        if (other.gameObject.CompareTag("PlayerGoal"))
+        {
+            // Debug.Log("Player exited the trigger of a pipe!");
+            if (--_GoalTriggerCount <= 0)
+            {
+                _GoalTriggerCount = 0;
+                playerPassedThroughPipe.Invoke();
+            }
+            // Debug.Log($"Goal Trigger Count: {_GoalTriggerCount}");
         }
     }
 }
