@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
-[RequireComponent(typeof(Rigidbody))]
 
+[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
 public class FlappyPlayer : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class FlappyPlayer : MonoBehaviour
     [SerializeField] private MeshRenderer _fallingMesh;
     [SerializeField] private MeshRenderer _jumpingMesh;
 
+    // Sound effects for the player, played when the player jumps or collides with a pipe
+    private AudioSource _audioSource;
+    [SerializeField] private AudioClip _bounceClip;
+
     // Starting position stored for resetting
     private Vector3 _startingPosition;
 
@@ -33,6 +38,7 @@ public class FlappyPlayer : MonoBehaviour
     {
         _inputs = new InputActions();
         _rigidbody = GetComponent<Rigidbody>();
+        _audioSource = GetComponent<AudioSource>();
         _startingPosition = transform.position;
     }
 
@@ -109,6 +115,8 @@ public class FlappyPlayer : MonoBehaviour
         // Reset the linear velocity and apply an impulse to the rigidbody to make the player jump
         _rigidbody.linearVelocity = Vector3.zero;
         _rigidbody.AddForce(Vector3.up * _settings.jumpImpulse, ForceMode.Impulse);
+        // Play the jump sound effect if one is set
+        if (_bounceClip != null) { _audioSource.PlayOneShot(_bounceClip); }
     }
 
     private void OnCollisionEnter(Collision collision)
