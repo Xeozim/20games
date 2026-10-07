@@ -44,7 +44,7 @@ public class FlappyPipe : MonoBehaviour
     }
 
     // Called by the game controller when the game is over to stop the pipe from moving
-    public void SetGameOverState(bool gameOver)
+    public void OnGameOverUpdated(bool gameOver)
     {
         _gameOver = gameOver;
     }

@@ -52,8 +52,6 @@ public class FlappyGameController : MonoBehaviour
 
         // Subscribe to the player's collision event
         _player.playerCollidedWithPipe.AddListener(OnPlayerCollidedWithPipe);
-
-        ResetPlayer();
     }
 
     // Update is called once per frame
@@ -61,6 +59,18 @@ public class FlappyGameController : MonoBehaviour
     {
         // If the game is over, wait for the player to restart the game
         if (_gameOver) { return; }
+
+        // If the player is out of bounds (top or bottom of the screen), then end the game
+        var screenTopEdge = Camera.main.ViewportToWorldPoint(new Vector3(0, 1, 0)).y;
+        var screenBottomEdge = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0)).y;
+
+        if (_player.transform.position.y + _player.ColliderExtents.max.y > screenTopEdge
+         || _player.transform.position.y + _player.ColliderExtents.min.y < screenBottomEdge)
+        {
+            // At the moment we don't have a separate event for the player going 
+            // out of bounds, so just act as if they collided with a pipe
+            OnPlayerCollidedWithPipe();
+        }
 
         // If the X distance between the player and the LAST pipe in the queue is
         // less than the distance between the player and the edge of the screen,
@@ -112,7 +122,7 @@ public class FlappyGameController : MonoBehaviour
                 // Create a new pipe and add it to the queue.
                 var pipe = Instantiate(_pipePrefab, new Vector3(newPipeXPosition, newPipeYPosition, 0f), Quaternion.identity);
                 pipe.transform.SetParent(_pipeParent, true);
-                gameOverStateUpdated.AddListener(pipe.SetGameOverState);
+                gameOverStateUpdated.AddListener(pipe.OnGameOverUpdated);
                 _pipeQueue.Enqueue(pipe);
                 _lastPipe = pipe;
 
@@ -137,24 +147,10 @@ public class FlappyGameController : MonoBehaviour
         // Remove all pipes from the scene and clear the queue
         foreach (var pipe in _pipeQueue)
         {
-            gameOverStateUpdated.RemoveListener(pipe.SetGameOverState);
+            gameOverStateUpdated.RemoveListener(pipe.OnGameOverUpdated);
             Destroy(pipe.gameObject);
         }
         _pipeQueue.Clear();
-
-        // Reset the player
-        ResetPlayer();
-    }
-
-    private void ResetPlayer()
-    {
-        // Reset the player position and velocity and enable physics
-        var playerRigidbody = _player.GetComponent<Rigidbody>();
-        playerRigidbody.isKinematic = false;
-        _player.transform.position = new Vector3(-4f, 0f, 0f);
-        playerRigidbody.linearVelocity = Vector3.zero;
-        playerRigidbody.angularVelocity = Vector3.zero;
-        playerRigidbody.rotation = Quaternion.identity;
     }
 
     // Called by the player when passing through a pipe to increment the score
