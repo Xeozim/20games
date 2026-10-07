@@ -129,7 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 45740124}
   - component: {fileID: 45740128}
-  - component: {fileID: 45740125}
+  - component: {fileID: 45740129}
   m_Layer: 6
   m_Name: Collider
   m_TagString: PlayerPaddle
@@ -152,28 +152,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1297649056}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &45740125
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 45740123}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 64
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!33 &45740128
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -182,6 +160,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 45740123}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &45740129
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 45740123}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &100487545
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,19 +363,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6530997786497867419, guid: 4d1472adf812d4747a5d96a78e5fce5b, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.00025603175
-      objectReference: {fileID: 0}
-    - target: {fileID: 6530997786497867419, guid: 4d1472adf812d4747a5d96a78e5fce5b, type: 3}
-      propertyPath: m_NormalizedViewPortRect.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6530997786497867419, guid: 4d1472adf812d4747a5d96a78e5fce5b, type: 3}
+      propertyPath: m_NormalizedViewPortRect.y
+      value: 0.11357868
+      objectReference: {fileID: 0}
+    - target: {fileID: 6530997786497867419, guid: 4d1472adf812d4747a5d96a78e5fce5b, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.99948794
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6530997786497867419, guid: 4d1472adf812d4747a5d96a78e5fce5b, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 1
+      value: 0.77284265
       objectReference: {fileID: 0}
     - target: {fileID: 8131698540108764547, guid: 4d1472adf812d4747a5d96a78e5fce5b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -468,7 +467,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363229932}
-  m_Material: {fileID: 13400000, guid: 8150f1418fac8ce4ebbcc5a8c91eeb16, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 64
@@ -731,6 +730,7 @@ MonoBehaviour:
   playerScore: {fileID: 195350763}
   playerLives: {fileID: 1566259841}
   opponentScore: {fileID: 0}
+  gameOverText: {fileID: 0}
 --- !u!1 &875917285
 GameObject:
   m_ObjectHideFlags: 0
@@ -835,10 +835,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd0c6793eb117e84fb286387f5c11d82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionLayers:
+  _collisionLayers:
     serializedVersion: 2
     m_Bits: 192
-  bounceClip: {fileID: 8300000, guid: 4c21c54c02f428446a855227b1ebc554, type: 3}
+  _bounceClip: {fileID: 8300000, guid: 4c21c54c02f428446a855227b1ebc554, type: 3}
   _settings: {fileID: 11400000, guid: f7a85022c509e734890042d5669ef160, type: 2}
   BallEnteredPlayerGoal:
     m_PersistentCalls:
@@ -1051,7 +1051,7 @@ MonoBehaviour:
   _renderers:
   - {fileID: 1297649054}
   _colliders:
-  - {fileID: 45740125}
+  - {fileID: 45740129}
   - {fileID: 1904410699}
   _settings: {fileID: 11400000, guid: f7a85022c509e734890042d5669ef160, type: 2}
 --- !u!1 &1297649052
@@ -1293,7 +1293,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494848521}
-  m_Material: {fileID: 13400000, guid: 8150f1418fac8ce4ebbcc5a8c91eeb16, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 64
@@ -1542,7 +1542,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1590380080}
-  m_Material: {fileID: 13400000, guid: 8150f1418fac8ce4ebbcc5a8c91eeb16, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 64
@@ -1678,7 +1678,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1904410697}
-  m_Material: {fileID: 13400000, guid: 8150f1418fac8ce4ebbcc5a8c91eeb16, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

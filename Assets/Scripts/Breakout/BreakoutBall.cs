@@ -51,7 +51,7 @@ public class BreakoutBall : Ball
 
     protected override void ColliderHit(RaycastHit hit)
     {
-        // Debug.Log($"Ball hit Collider ({hit.collider.gameObject}) with tag: {hit.collider.gameObject.tag}");
+        Debug.Log($"Ball hit Collider ({hit.collider.gameObject}) with tag: {hit.collider.gameObject.tag}");
         if (hit.collider.gameObject.CompareTag("PlayerPaddle"))
         {
             Velocity = BallBehaviours.VelocityAfterPaddleCollision(Velocity, hit.point, hit.transform);

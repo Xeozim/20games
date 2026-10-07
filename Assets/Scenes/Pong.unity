@@ -167,7 +167,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 15844429}
-  m_Material: {fileID: 13400000, guid: 8150f1418fac8ce4ebbcc5a8c91eeb16, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 64
@@ -501,7 +501,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363229932}
-  m_Material: {fileID: 13400000, guid: 8150f1418fac8ce4ebbcc5a8c91eeb16, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 64
@@ -868,6 +868,7 @@ MonoBehaviour:
   playerScore: {fileID: 195350763}
   playerLives: {fileID: 0}
   opponentScore: {fileID: 1771246238}
+  gameOverText: {fileID: 0}
 --- !u!1 &875917285
 GameObject:
   m_ObjectHideFlags: 0
@@ -1579,7 +1580,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494848521}
-  m_Material: {fileID: 13400000, guid: 8150f1418fac8ce4ebbcc5a8c91eeb16, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 64
@@ -1854,7 +1855,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1590380080}
-  m_Material: {fileID: 13400000, guid: 8150f1418fac8ce4ebbcc5a8c91eeb16, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 64
