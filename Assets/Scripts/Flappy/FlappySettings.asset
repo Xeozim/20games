@@ -19,5 +19,5 @@ MonoBehaviour:
   pipeYMinimum: -3
   pipeYMaximum: 3
   pipeYChangeMaximum: 3
-  jumpImpulse: 3.5
-  jumpWait: 0
+  jumpImpulse: 3.75
+  verticalRotationFactor: 3

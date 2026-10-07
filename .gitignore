@@ -76,3 +76,7 @@ crashlytics-build.properties
 
 # MacOS
 .DS_Store
+
+# Generated lib burst code
+Data/Plugins/lib_burst_generated.cpp
+Data/Plugins/lib_burst_generated.wasm

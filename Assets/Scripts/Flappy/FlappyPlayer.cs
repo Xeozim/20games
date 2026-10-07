@@ -26,6 +26,9 @@ public class FlappyPlayer : MonoBehaviour
     // player has touched the top or bottom of the screen
     public Bounds ColliderExtents { get; private set; } = new Bounds();
 
+    // Game over state, set by the game controller when the player collides with a pipe
+    private bool _gameOver = false;
+
     private void Awake()
     {
         _inputs = new InputActions();
@@ -78,6 +81,8 @@ public class FlappyPlayer : MonoBehaviour
 
     private void Update()
     {
+        if (_gameOver) { return; }
+
         // If the player is falling, show the falling mesh, otherwise show the jumping mesh
         if (_rigidbody.linearVelocity.y < 0)
         {
@@ -89,12 +94,17 @@ public class FlappyPlayer : MonoBehaviour
             _fallingMesh.enabled = false;
             _jumpingMesh.enabled = true;
         }
+
+        // Set the rotation of the player based on the vertical velocity
+        // with a maximum rotation of 45 degrees up and 60 degrees down
+        var rotationZ = Mathf.Clamp(_rigidbody.linearVelocity.y * _settings.verticalRotationFactor, -45f, 60f);
+        transform.rotation = Quaternion.Euler(0f, 0f, rotationZ);
     }
 
     private void OnJumpInputPerformed(InputAction.CallbackContext context)
     {
         // Ignore input if the rigidbody is kinematic (i.e. the game is over)
-        if (_rigidbody.isKinematic) { return; }
+        if (_gameOver) { return; }
 
         // Reset the linear velocity and apply an impulse to the rigidbody to make the player jump
         _rigidbody.linearVelocity = Vector3.zero;
@@ -120,6 +130,8 @@ public class FlappyPlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (_gameOver) { return; }
+
         // If the player passes through a pipe, increment the score
         if (other.gameObject.CompareTag("PlayerGoal"))
         {
@@ -131,6 +143,8 @@ public class FlappyPlayer : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        if (_gameOver) { return; }
+
         // If the player exits the trigger of a pipe, increment the score
         if (other.gameObject.CompareTag("PlayerGoal"))
         {
@@ -144,23 +158,24 @@ public class FlappyPlayer : MonoBehaviour
         }
     }
 
-    private void ResetRigidbody()
-    {
-        // Reset the player position and velocity and enable physics
-        _rigidbody.isKinematic = false;
-        _rigidbody.linearVelocity = Vector3.zero;
-        _rigidbody.angularVelocity = Vector3.zero;
-        _rigidbody.rotation = Quaternion.identity;
-    }
-
     // Called by the game controller when the game is over to reset things
     public void OnGameOverUpdated(bool isGameOver)
     {
-        if (isGameOver)
+        if (_gameOver == isGameOver) { return; }
+        _gameOver = isGameOver;
+
+        if (_gameOver)
         {
             _GoalTriggerCount = 0;
+            _rigidbody.linearVelocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
+            _rigidbody.isKinematic = true;
+        } else
+        {
+            // Enable physics to stop the player from falling off the screen
+            _rigidbody.isKinematic = false;
             transform.position = _startingPosition;
-            ResetRigidbody();
+            transform.rotation = Quaternion.identity;
         }
     }
 }
